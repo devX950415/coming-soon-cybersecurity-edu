@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TimeLeft {
   days: number;
@@ -50,10 +51,38 @@ export default function Countdown({ targetDate }: CountdownProps) {
   );
 }
 
+// added flipcard effect to the countdown
+
+function FlipCard({ digit, label }: { digit: string; label: string }) {
+  return (
+    <div className="relative w-10 h-12 perspective-500">
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          key={digit}
+          initial={{ rotateX: -90, opacity: 0 }}
+          animate={{ rotateX: 0, opacity: 1 }}
+          exit={{ rotateX: 90, opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-theme bg-black/20 rounded-md backface-hidden"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {digit}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function TimeUnit({ value, label }: { value: string; label: string }) {
+  const digits = value.split('');
+  
   return (
     <div className="text-center">
-      <div className="text-4xl font-bold text-theme">{value}</div>
+      <div className="flex gap-1">
+        {digits.map((digit, index) => (
+          <FlipCard key={`${label}-${index}`} digit={digit} label={label} />
+        ))}
+      </div>
       <div className="text-xs text-muted mt-1">{label}</div>
     </div>
   );

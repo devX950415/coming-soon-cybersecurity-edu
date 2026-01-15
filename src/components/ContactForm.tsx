@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { motion } from 'framer-motion';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -79,13 +80,32 @@ export default function ContactForm() {
         />
       </div>
 
-      <button
+      {/* added animation to submit button */}
+      <motion.button
         type="submit"
-        className="mt-4 px-6 py-3 rounded-full font-medium transition-colors"
-        style={{ backgroundColor: 'var(--foreground)', color: 'var(--background)' }}
+        className="relative mt-4 px-6 py-3 rounded-full font-medium cursor-pointer overflow-hidden border border-theme text-theme"
+        whileHover="hover"
+        initial="initial"
       >
-        Submit
-      </button>
+        <motion.div
+          className="absolute inset-0 bg-white"
+          variants={{
+            initial: { x: '-100%' },
+            hover: { x: 0 },
+          }}
+          transition={{ duration: 0.3, ease: 'easeInOut' as const }}
+        />
+        <motion.span
+          className="relative z-10"
+          variants={{
+            initial: { color: 'var(--foreground)' },
+            hover: { color: 'var(--background)' },
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          Submit
+        </motion.span>
+      </motion.button>
     </form>
   );
 }
