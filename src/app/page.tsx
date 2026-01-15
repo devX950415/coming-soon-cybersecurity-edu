@@ -8,7 +8,7 @@ export default function Home() {
   launchDate.setDate(launchDate.getDate() + 86);
 
   return (
-    <main className="min-h-screen bg-black relative overflow-hidden">
+    <main className="min-h-screen bg-theme relative overflow-hidden">
       {/* Blue glow background effect */}
       <div className="blue-glow absolute inset-0 pointer-events-none" />
       
@@ -25,7 +25,7 @@ export default function Home() {
 
         {/* Description */}
         <div className="mt-20 max-w-md text-left">
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="text-muted text-sm leading-relaxed">
             The future of cybersecurity careers is AI-native.
             <br />
             Cyra merges structured skill paths with dynamic, real-world labs to train the next generation of elite defenders.
@@ -33,11 +33,11 @@ export default function Home() {
 
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 border border-white/30 rounded-full text-white text-sm hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 border border-theme rounded-full text-theme text-sm hover:opacity-80 transition-colors"
           >
             Get in touch
-            <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-              <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--foreground)' }}>
+              <svg className="w-3 h-3" style={{ color: 'var(--background)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </span>
