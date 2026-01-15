@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Blue glow effect */
+.blue-glow {
+  background: radial-gradient(ellipse at 30% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%);
+}
+
+/* Coming soon text gradient */
+.coming-soon-text {
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
