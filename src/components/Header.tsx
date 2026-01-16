@@ -13,7 +13,7 @@ export default function Header() {
 
       {/* logo */}
 
-      <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center gap-2 relative relative">
+      <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center gap-2 relative">
         <Image
           src="/logo.png"
           fill
