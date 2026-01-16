@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
 
@@ -9,9 +10,16 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-8 py-6 flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 bg-theme text-theme rounded" style={{ backgroundColor: 'var(--foreground)' }} />
-        <span className="text-theme font-semibold text-lg">CYRA</span>
+
+      {/* logo */}
+
+      <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center gap-2 relative relative">
+        <Image
+          src="/logo.png"
+          fill
+          alt="CYRA Logo"
+          className="object-contain"
+        />
       </div>
 
       <nav className="flex items-center gap-8">
