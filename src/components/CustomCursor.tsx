@@ -13,9 +13,11 @@ import { useEffect, useRef, useState } from "react";
  * - Hover state detection for interactive elements
  * - Minimal, eye-catching animations
  */
+
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const trailContainerRef = useRef<HTMLDivElement>(null);
 
   // Use lazy initialization to detect touch device
   const [isTouchDevice] = useState(() => {
@@ -41,6 +43,19 @@ export default function CustomCursor() {
     scale: 1,
     targetScale: 1,
   });
+
+  // Trail particles state
+  const trailParticlesRef = useRef<
+    Array<{
+      id: number;
+      x: number;
+      y: number;
+      opacity: number;
+      scale: number;
+      createdAt: number;
+    }>
+  >([]);
+  const particleIdRef = useRef(0);
 
   useEffect(() => {
     if (isTouchDevice) return;
@@ -107,6 +122,66 @@ export default function CustomCursor() {
       const dx = pos.x - pos.prevX;
       const dy = pos.y - pos.prevY;
       const velocity = Math.sqrt(dx * dx + dy * dy);
+
+      // Create trail particles when moving (velocity-based)
+      if (velocity > 1 && trailContainerRef.current) {
+        // Create particle every few frames when moving
+        if (Math.random() > 0.6) {
+          const particle = {
+            id: particleIdRef.current++,
+            x: pos.x,
+            y: pos.y,
+            opacity: 0.6 + velocity * 0.02,
+            scale: 0.8 + velocity * 0.015,
+            createdAt: Date.now(),
+          };
+
+          trailParticlesRef.current.push(particle);
+
+          // Limit particles to prevent memory issues
+          if (trailParticlesRef.current.length > 15) {
+            trailParticlesRef.current.shift();
+          }
+        }
+      }
+
+      // Update and remove old trail particles
+      const now = Date.now();
+      trailParticlesRef.current = trailParticlesRef.current.filter(
+        (particle) => now - particle.createdAt < 600 // 600ms lifetime
+      );
+
+      // Render trail particles
+      if (trailContainerRef.current) {
+        const particles = trailParticlesRef.current;
+        trailContainerRef.current.innerHTML = particles
+          .map((particle) => {
+            const age = now - particle.createdAt;
+            const lifetimeProgress = age / 600;
+            const currentOpacity = particle.opacity * (1 - lifetimeProgress);
+            const currentScale = particle.scale * (1 - lifetimeProgress * 0.5);
+
+            return `
+              <div style="
+                position: absolute;
+                left: ${particle.x}px;
+                top: ${particle.y}px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                transform: translate(-50%, -50%) scale(${currentScale});
+                background: radial-gradient(circle at center,
+                  rgba(59, 130, 246, ${currentOpacity * 0.4}) 0%,
+                  rgba(139, 92, 246, ${currentOpacity * 0.3}) 40%,
+                  transparent 70%
+                );
+                filter: blur(12px);
+                pointer-events: none;
+              "></div>
+            `;
+          })
+          .join("");
+      }
 
       // Update cursor position and effects
       if (cursor && glow) {
@@ -175,26 +250,41 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Ambient background glow - creates beautiful halo effect */}
+      {/* Trail particles container */}
+      <div
+        ref={trailContainerRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: 9997,
+        }}
+      />
+
+      {/* Ambient background glow - creates beautiful halo effect with increased radius */}
       <div
         ref={glowRef}
         style={{
           position: "fixed",
-          width: "180px",
-          height: "180px",
+          width: "320px",
+          height: "320px",
           borderRadius: "50%",
           pointerEvents: "none",
           zIndex: 9998,
           transform: "translate(-50%, -50%)",
           background: `
             radial-gradient(circle at center,
-              rgba(59, 130, 246, 0.18) 0%,
-              rgba(139, 92, 246, 0.12) 35%,
-              rgba(59, 130, 246, 0.06) 60%,
-              transparent 80%
+              rgba(59, 130, 246, 0.22) 0%,
+              rgba(139, 92, 246, 0.16) 30%,
+              rgba(59, 130, 246, 0.1) 50%,
+              rgba(139, 92, 246, 0.05) 70%,
+              transparent 85%
             )
           `,
-          filter: "blur(35px)",
+          filter: "blur(50px)",
           opacity: 0.6,
           willChange: "transform, opacity",
           transition: "opacity 0.2s ease",
