@@ -6,48 +6,76 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 export default function Home() {
-  // Set launch date to 86 days from now (matching the design)
-  const launchDate = new Date();
-  launchDate.setDate(launchDate.getDate() + 86);
+  // Fixed launch date - April 12, 2026 (86 days from Jan 16, 2026)
+  // This ensures the countdown persists across page refreshes
+  const launchDate = new Date('2026-04-01T00:00:00');
 
   return (
-    <main className="min-h-screen bg-theme relative overflow-hidden">
-      {/* Animated spotlight background effect */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, ease: 'easeOut' as const }}
-      >
-        <motion.div
-          className="absolute w-[800px] h-[800px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.1) 40%, transparent 70%)',
-            filter: 'blur(60px)',
-          }}
-          initial={{ x: '-50%', y: '-50%', top: '30%', left: '-20%' }}
-          animate={{ 
-            left: ['−20%', '30%', '20%'],
-            top: ['30%', '20%', '35%'],
-          }}
-          transition={{ 
-            duration: 8, 
-            ease: 'easeInOut' as const,
-            repeat: Infinity,
-            repeatType: 'reverse' as const,
-          }}
-        />
-      </motion.div>
+    <main className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
+      {/* Grid pattern background */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px',
+          maskImage: 'radial-gradient(ellipse at 30% 50%, black 0%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 30% 50%, black 0%, transparent 70%)',
+        }}
+      />
 
-      {/* Blue glow background effect */}
-      <div className="blue-glow absolute inset-0 pointer-events-none" />
-      
+      {/* Spotlight from top-left corner */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'conic-gradient(from 135deg at 0% 0%, rgba(255, 255, 255, 0.15) 0deg, rgba(255, 255, 255, 0.05) 30deg, transparent 60deg)',
+        }}
+      />
+      <div
+        className="absolute top-0 left-0 w-[800px] h-[800px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 0% 0%, rgba(255, 255, 255, 0.1) 0%, transparent 50%)',
+        }}
+      />
+
+      {/* Spotlight from top-right corner */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'conic-gradient(from -135deg at 100% 0%, rgba(255, 255, 255, 0.15) 0deg, rgba(255, 255, 255, 0.05) 30deg, transparent 60deg)',
+        }}
+      />
+      <div
+        className="absolute top-0 right-0 w-[800px] h-[800px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 100% 0%, rgba(255, 255, 255, 0.1) 0%, transparent 50%)',
+        }}
+      />
+
+      {/* Blue glow effect from left side */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 30%, transparent 60%)',
+        }}
+      />
+
+      {/* Subtle ambient light on text area */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 40%)',
+        }}
+      />
+
       <Header />
 
       <div className="flex flex-col items-center justify-center min-h-screen px-8">
         {/* Coming Soon Text - Letter by letter animation */}
         <div className="overflow-hidden">
-          <h1 className="coming-soon-text text-[120px] md:text-[180px] font-bold tracking-tight leading-none mb-8 flex">
+          <h1 className="font-display text-[60px] md:text-[100px] lg:text-[140px] font-bold tracking-wide leading-none mb-8 flex uppercase text-white/90">
             {'COMING'.split('').map((letter, index) => (
               <motion.span
                 key={`coming-${index}`}
@@ -64,7 +92,7 @@ export default function Home() {
                 {letter}
               </motion.span>
             ))}
-            <span className="ml-6">
+            <span className="ml-3 md:ml-5">
               {'SOON'.split('').map((letter, index) => (
                 <motion.span
                   key={`soon-${index}`}
@@ -94,22 +122,24 @@ export default function Home() {
           <Countdown targetDate={launchDate} />
         </motion.div>
 
-        {/* Description added animation */}
+        {/* Description - centered with quotes */}
         <motion.div
-          className="mt-20 max-w-md text-left"
+          className="mt-12 max-w-lg text-center"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeIn' as const, delay: 0.9 }}
         >
-          <p className="text-muted text-sm leading-relaxed">
-            The future of cybersecurity careers is AI-native.
+          <p className="text-gray-400 text-sm leading-relaxed">
+            &ldquo;The future of cybersecurity careers is AI-native.
             <br />
-            Cyra merges structured skill paths with dynamic, real-world labs to train the next generation of elite defenders.
+            Cyra merges structured skill paths with dynamic, real-world
+            <br />
+            labs to train the next generation of elite defenders.&rdquo;
           </p>
 
-          <Link href="/contact" className="cursor-pointer inline-block mt-6">
+          <Link href="/contact" className="cursor-pointer inline-block mt-8">
             <motion.div
-              className="relative flex items-center gap-2 px-5 py-2.5 border border-theme rounded-full text-theme text-sm overflow-hidden"
+              className="relative flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm overflow-hidden"
               whileHover="hover"
               initial="initial"
             >
@@ -122,37 +152,15 @@ export default function Home() {
                 transition={{ duration: 0.3, ease: 'easeInOut' as const }}
               />
               <motion.span
-                className="relative z-10"
+                className="relative z-10 flex items-center gap-2"
                 variants={{
-                  initial: { color: 'var(--foreground)' },
-                  hover: { color: 'var(--background)' },
+                  initial: { color: '#ffffff' },
+                  hover: { color: '#0a0a0f' },
                 }}
                 transition={{ duration: 0.3 }}
               >
-                Get in touch
-              </motion.span>
-              <motion.span
-                className="relative z-10 w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: 'var(--foreground)' }}
-                variants={{
-                  initial: { backgroundColor: 'var(--foreground)' },
-                  hover: { backgroundColor: 'var(--background)' },
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  variants={{
-                    initial: { color: 'var(--background)' },
-                    hover: { color: 'var(--foreground)' },
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </motion.svg>
+                <span className="w-2 h-2 rounded-full bg-current" />
+                Get <span className="text-blue-400 group-hover:text-blue-600">Registered</span>
               </motion.span>
             </motion.div>
           </Link>

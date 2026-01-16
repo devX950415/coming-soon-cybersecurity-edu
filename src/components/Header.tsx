@@ -39,7 +39,7 @@ export default function Header() {
     >
       <motion.div className="flex items-center gap-3" variants={itemVariants}>
         <div className="w-6 h-6 bg-theme text-theme rounded" style={{ backgroundColor: 'var(--foreground)' }} />
-        <span className="text-theme font-semibold text-lg cursor-pointer">CYRA</span>
+        <span className="text-theme font-display font-semibold text-lg cursor-pointer tracking-wider">CYRA</span>
       </motion.div>
 
       <motion.nav className="flex items-center gap-6 md:gap-10" variants={itemVariants}>

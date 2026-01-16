@@ -20,7 +20,7 @@ export default function Countdown({ targetDate }: CountdownProps) {
   useEffect(() => {
     const calculateTimeLeft = () => {
       const difference = targetDate.getTime() - new Date().getTime();
-      
+
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -39,7 +39,7 @@ export default function Countdown({ targetDate }: CountdownProps) {
   const formatNumber = (num: number) => num.toString().padStart(2, '0');
 
   return (
-    <div className="flex items-center card-bg backdrop-blur-sm rounded-lg px-6 py-4 gap-6">
+    <div className="flex items-center bg-[#1a1a24]/80 backdrop-blur-sm rounded-xl px-6 py-4 gap-4 border border-white/10">
       <TimeUnit value={formatNumber(timeLeft.days)} label="Days" />
       <Divider />
       <TimeUnit value={formatNumber(timeLeft.hours)} label="Hours" />
@@ -51,20 +51,19 @@ export default function Countdown({ targetDate }: CountdownProps) {
   );
 }
 
-// added flipcard effect to the countdown
+// Slide animation - old number pushed up, new number rises from bottom
 
-function FlipCard({ digit, label }: { digit: string; label: string }) {
+function FlipCard({ digit }: { digit: string }) {
   return (
-    <div className="relative w-10 h-12 perspective-500">
+    <div className="relative w-8 h-10 overflow-hidden">
       <AnimatePresence mode="popLayout">
         <motion.div
           key={digit}
-          initial={{ rotateX: -90, opacity: 0 }}
-          animate={{ rotateX: 0, opacity: 1 }}
-          exit={{ rotateX: 90, opacity: 0 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-theme bg-black/20 rounded-md backface-hidden"
-          style={{ transformStyle: 'preserve-3d' }}
+          initial={{ y: '100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '-100%' }}
+          transition={{ duration: 0.4, ease: 'easeInOut' as const }}
+          className="absolute inset-0 flex items-center justify-center text-3xl font-semibold text-white"
         >
           {digit}
         </motion.div>
@@ -75,19 +74,19 @@ function FlipCard({ digit, label }: { digit: string; label: string }) {
 
 function TimeUnit({ value, label }: { value: string; label: string }) {
   const digits = value.split('');
-  
+
   return (
-    <div className="text-center">
-      <div className="flex gap-1">
+    <div className="text-center px-2">
+      <div className="flex gap-0.5">
         {digits.map((digit, index) => (
-          <FlipCard key={`${label}-${index}`} digit={digit} label={label} />
+          <FlipCard key={`${label}-${index}`} digit={digit} />
         ))}
       </div>
-      <div className="text-xs text-muted mt-1">{label}</div>
+      <div className="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">{label}</div>
     </div>
   );
 }
 
 function Divider() {
-  return <div className="w-px h-12 border-theme" style={{ backgroundColor: 'var(--border)' }} />;
+  return <div className="w-px h-10 bg-white/20" />;
 }

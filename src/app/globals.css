@@ -10,6 +10,8 @@
   --glow-opacity: 0.3;
   --text-gradient-start: rgba(255,255,255,0.15);
   --text-gradient-end: rgba(255,255,255,0.05);
+  --font-orbitron: 'Orbitron', sans-serif;
+  --font-space-grotesk: 'Space Grotesk', sans-serif;
 }
 
 [data-theme='light'] {
@@ -26,8 +28,16 @@
 html, body {
   background-color: var(--background) !important;
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Font utilities */
+.font-display {
+  font-family: var(--font-orbitron), system-ui, sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
 }
 
 /* Blue glow effect */
