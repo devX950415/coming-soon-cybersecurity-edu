@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface TimeLeft {
   days: number;
@@ -14,12 +14,17 @@ interface CountdownProps {
 }
 
 export default function Countdown({ targetDate }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   useEffect(() => {
     const calculateTimeLeft = () => {
       const difference = targetDate.getTime() - new Date().getTime();
-      
+
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -35,7 +40,7 @@ export default function Countdown({ targetDate }: CountdownProps) {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const formatNumber = (num: number) => num.toString().padStart(2, '0');
+  const formatNumber = (num: number) => num.toString().padStart(2, "0");
 
   return (
     <div className="flex items-center card-bg backdrop-blur-sm rounded-lg px-6 py-4 gap-6">
@@ -60,5 +65,10 @@ function TimeUnit({ value, label }: { value: string; label: string }) {
 }
 
 function Divider() {
-  return <div className="w-px h-12 border-theme" style={{ backgroundColor: 'var(--border)' }} />;
+  return (
+    <div
+      className="w-px h-12 border-theme"
+      style={{ backgroundColor: "var(--border)" }}
+    />
+  );
 }
