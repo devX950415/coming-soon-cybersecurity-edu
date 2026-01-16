@@ -9,25 +9,31 @@ import { useEffect, useRef, useState } from "react";
  * Features:
  * - Smooth cursor tracking with lerp interpolation
  * - Velocity-based stretch and glow effects
- * - Ambient background glow that follo ws cursor
+ * - Ambient background glow that follows cursor
  * - Hover state detection for interactive elements
- * - Minimal, eye-catching animations
+ * - Minimal, eye-catching animations with trailing particles
  */
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const trailContainerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   // Use lazy initialization to detect touch device
   const [isTouchDevice] = useState(() => {
-    if (typeof window === "undefined") return true; // SSR safety - assume touch
+    if (typeof window === "undefined") return true;
     return (
       "ontouchstart" in window ||
       navigator.maxTouchPoints > 0 ||
       window.matchMedia("(pointer: coarse)").matches
     );
   });
+
+  // Set mounted flag only after hydration is complete
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const positionRef = useRef({
     x: 0,
@@ -44,7 +50,6 @@ export default function CustomCursor() {
     targetScale: 1,
   });
 
-  // Trail particles state
   const trailParticlesRef = useRef<
     Array<{
       id: number;
@@ -53,18 +58,21 @@ export default function CustomCursor() {
       opacity: number;
       scale: number;
       createdAt: number;
+      element?: HTMLDivElement;
     }>
   >([]);
   const particleIdRef = useRef(0);
 
   useEffect(() => {
-    if (isTouchDevice) return;
+    if (isTouchDevice || !mounted) return;
 
     const cursor = cursorRef.current;
     const glow = glowRef.current;
-    if (!cursor || !glow) return;
+    const trailContainer = trailContainerRef.current;
+    if (!cursor || !glow || !trailContainer) return;
 
     let animationFrameId: number;
+    let frameCounter = 0;
 
     // Lerp function for smooth interpolation
     const lerp = (start: number, end: number, factor: number) => {
@@ -80,7 +88,7 @@ export default function CustomCursor() {
     // Hover detection for interactive elements
     const checkHoverState = () => {
       const interactiveElements = document.querySelectorAll(
-        'a, button, input, textarea, [role="button"]'
+        "a, button, input, textarea, [role='button']"
       );
 
       let isOverInteractive = false;
@@ -104,12 +112,36 @@ export default function CustomCursor() {
       }
     };
 
+    // Create particle DOM element
+    const createParticleElement = (
+      particle: (typeof trailParticlesRef.current)[0]
+    ) => {
+      const div = document.createElement("div");
+      div.style.cssText = `
+        position: absolute;
+        left: ${particle.x}px;
+        top: ${particle.y}px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(${particle.scale});
+        background: radial-gradient(circle at center,
+          rgba(59, 130, 246, ${particle.opacity * 0.4}) 0%,
+          rgba(139, 92, 246, ${particle.opacity * 0.3}) 40%,
+          transparent 70%
+        );
+        filter: blur(12px);
+        pointer-events: none;
+      `;
+      return div;
+    };
+
     // Animation loop
     const animate = () => {
       const pos = positionRef.current;
       const state = stateRef.current;
 
-      // Smooth interpolation for position (0.25 = snappy, responsive)
+      // Smooth interpolation for position
       pos.prevX = pos.x;
       pos.prevY = pos.y;
       pos.x = lerp(pos.x, pos.targetX, 0.25);
@@ -123,11 +155,10 @@ export default function CustomCursor() {
       const dy = pos.y - pos.prevY;
       const velocity = Math.sqrt(dx * dx + dy * dy);
 
-      // Create trail particles when moving (velocity-based)
-      if (velocity > 1 && trailContainerRef.current) {
-        // Create particle every few frames when moving
-        if (Math.random() > 0.6) {
-          const particle = {
+      // Create trail particles when moving
+      if (velocity > 1) {
+        if (frameCounter % 3 === 0 && Math.random() > 0.5) {
+          const particle: (typeof trailParticlesRef.current)[0] = {
             id: particleIdRef.current++,
             x: pos.x,
             y: pos.y,
@@ -137,55 +168,42 @@ export default function CustomCursor() {
           };
 
           trailParticlesRef.current.push(particle);
+          const element = createParticleElement(particle);
+          trailContainer.appendChild(element);
+          particle.element = element;
 
-          // Limit particles to prevent memory issues
+          // Limit particles
           if (trailParticlesRef.current.length > 15) {
-            trailParticlesRef.current.shift();
+            const removed = trailParticlesRef.current.shift();
+            removed?.element?.remove();
           }
         }
       }
 
       // Update and remove old trail particles
       const now = Date.now();
-      trailParticlesRef.current = trailParticlesRef.current.filter(
-        (particle) => now - particle.createdAt < 600 // 600ms lifetime
-      );
+      for (let i = trailParticlesRef.current.length - 1; i >= 0; i--) {
+        const particle = trailParticlesRef.current[i];
+        const age = now - particle.createdAt;
 
-      // Render trail particles
-      if (trailContainerRef.current) {
-        const particles = trailParticlesRef.current;
-        trailContainerRef.current.innerHTML = particles
-          .map((particle) => {
-            const age = now - particle.createdAt;
-            const lifetimeProgress = age / 600;
-            const currentOpacity = particle.opacity * (1 - lifetimeProgress);
-            const currentScale = particle.scale * (1 - lifetimeProgress * 0.5);
+        if (age > 600) {
+          particle.element?.remove();
+          trailParticlesRef.current.splice(i, 1);
+        } else {
+          // Update particle opacity and scale
+          const lifetimeProgress = age / 600;
+          const currentOpacity = particle.opacity * (1 - lifetimeProgress);
+          const currentScale = particle.scale * (1 - lifetimeProgress * 0.5);
 
-            return `
-              <div style="
-                position: absolute;
-                left: ${particle.x}px;
-                top: ${particle.y}px;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                transform: translate(-50%, -50%) scale(${currentScale});
-                background: radial-gradient(circle at center,
-                  rgba(59, 130, 246, ${currentOpacity * 0.4}) 0%,
-                  rgba(139, 92, 246, ${currentOpacity * 0.3}) 40%,
-                  transparent 70%
-                );
-                filter: blur(12px);
-                pointer-events: none;
-              "></div>
-            `;
-          })
-          .join("");
+          if (particle.element) {
+            particle.element.style.opacity = `${currentOpacity}`;
+            particle.element.style.transform = `translate(-50%, -50%) scale(${currentScale})`;
+          }
+        }
       }
 
       // Update cursor position and effects
       if (cursor && glow) {
-        // Main cursor ring
         cursor.style.left = `${pos.x}px`;
         cursor.style.top = `${pos.y}px`;
 
@@ -217,7 +235,6 @@ export default function CustomCursor() {
           inset 0 0 15px rgba(255, 255, 255, ${state.isHovering ? 0.25 : 0.1})
         `;
 
-        // Ambient glow background (slightly delayed for trail effect)
         glow.style.left = `${pos.x}px`;
         glow.style.top = `${pos.y}px`;
         glow.style.opacity = `${0.6 + velocity * 0.015}`;
@@ -230,6 +247,7 @@ export default function CustomCursor() {
 
       // Check hover state
       checkHoverState();
+      frameCounter++;
 
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -242,11 +260,14 @@ export default function CustomCursor() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("mousemove", handleMouseMove);
+      // Clean up particles
+      trailParticlesRef.current.forEach((p) => p.element?.remove());
+      trailParticlesRef.current = [];
     };
-  }, [isTouchDevice]);
+  }, [isTouchDevice, mounted]);
 
-  // Don't render on touch devices
-  if (isTouchDevice) return null;
+  // Don't render during SSR or on touch devices
+  if (!mounted || isTouchDevice) return null;
 
   return (
     <>
