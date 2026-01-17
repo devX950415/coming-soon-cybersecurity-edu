@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
 import { useState, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    message: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    message: "",
   });
   const [focusedField, setFocusedField] = useState<string | null>(null);
 

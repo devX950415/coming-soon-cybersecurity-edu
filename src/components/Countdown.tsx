@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,7 +15,12 @@ interface CountdownProps {
 }
 
 export default function Countdown({ targetDate }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -36,7 +41,7 @@ export default function Countdown({ targetDate }: CountdownProps) {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const formatNumber = (num: number) => num.toString().padStart(2, '0');
+  const formatNumber = (num: number) => num.toString().padStart(2, "0");
 
   return (
     <motion.div

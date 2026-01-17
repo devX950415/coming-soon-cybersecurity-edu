@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/context/ThemeContext';
+import CustomCursor from '@/components/CustomCursor';
 import { Orbitron, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 
@@ -30,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning className={`${orbitron.variable} ${spaceGrotesk.variable}`}>
       <body className="antialiased font-body">
+        <CustomCursor />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
