@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * CustomCursor Component
+ * CustomCursor Componentƒ
  *
  * A modern, minimal custom cursor with smooth glow effects and interactive animations.
  * Features:
@@ -64,12 +64,12 @@ export default function CustomCursor() {
   const particleIdRef = useRef(0);
 
   useEffect(() => {
-    if (isTouchDevice || !mounted) return;
+    if (!mounted) return;
 
     const cursor = cursorRef.current;
     const glow = glowRef.current;
     const trailContainer = trailContainerRef.current;
-    if (!cursor || !glow || !trailContainer) return;
+    if (!glow || !trailContainer) return;
 
     let animationFrameId: number;
     let frameCounter = 0;
@@ -85,10 +85,75 @@ export default function CustomCursor() {
       positionRef.current.targetY = e.clientY;
     };
 
+    // Touch handlers for mobile devices
+    const handleTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      positionRef.current.targetX = touch.clientX;
+      positionRef.current.targetY = touch.clientY;
+      positionRef.current.x = touch.clientX;
+      positionRef.current.y = touch.clientY;
+
+      // Create ripple effect on tap - 8 particles in a circle
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const distance = 30;
+        const particle: (typeof trailParticlesRef.current)[0] = {
+          id: particleIdRef.current++,
+          x: touch.clientX + Math.cos(angle) * distance,
+          y: touch.clientY + Math.sin(angle) * distance,
+          opacity: 0.8,
+          scale: 1.2,
+          createdAt: Date.now(),
+        };
+
+        trailParticlesRef.current.push(particle);
+        const element = createParticleElement(particle);
+        trailContainer.appendChild(element);
+        particle.element = element;
+
+        if (trailParticlesRef.current.length > 20) {
+          const removed = trailParticlesRef.current.shift();
+          removed?.element?.remove();
+        }
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      positionRef.current.targetX = touch.clientX;
+      positionRef.current.targetY = touch.clientY;
+
+      // Create trail particles on drag
+      if (frameCounter % 5 === 0) {
+        const particle: (typeof trailParticlesRef.current)[0] = {
+          id: particleIdRef.current++,
+          x: touch.clientX,
+          y: touch.clientY,
+          opacity: 0.7,
+          scale: 1.0,
+          createdAt: Date.now(),
+        };
+
+        trailParticlesRef.current.push(particle);
+        const element = createParticleElement(particle);
+        trailContainer.appendChild(element);
+        particle.element = element;
+
+        if (trailParticlesRef.current.length > 15) {
+          const removed = trailParticlesRef.current.shift();
+          removed?.element?.remove();
+        }
+      }
+    };
+
     // Hover detection for interactive elements
     const checkHoverState = () => {
       const interactiveElements = document.querySelectorAll(
-        "a, button, input, textarea, [role='button']"
+        "a, button, input, textarea, [role='button']",
       );
 
       let isOverInteractive = false;
@@ -114,7 +179,7 @@ export default function CustomCursor() {
 
     // Create particle DOM element
     const createParticleElement = (
-      particle: (typeof trailParticlesRef.current)[0]
+      particle: (typeof trailParticlesRef.current)[0],
     ) => {
       const div = document.createElement("div");
       div.style.cssText = `
@@ -202,8 +267,8 @@ export default function CustomCursor() {
         }
       }
 
-      // Update cursor position and effects
-      if (cursor && glow) {
+      // Update cursor position and effects (desktop only)
+      if (cursor) {
         cursor.style.left = `${pos.x}px`;
         cursor.style.top = `${pos.y}px`;
 
@@ -224,25 +289,28 @@ export default function CustomCursor() {
 
         cursor.style.boxShadow = `
           0 0 ${20 + glowIntensity + hoverGlow}px rgba(59, 130, 246, ${
-          0.5 + velocity * 0.01
-        }),
+            0.5 + velocity * 0.01
+          }),
           0 0 ${35 + glowIntensity + hoverGlow}px rgba(139, 92, 246, ${
-          0.35 + velocity * 0.008
-        }),
+            0.35 + velocity * 0.008
+          }),
           0 0 ${50 + glowIntensity}px rgba(59, 130, 246, ${
-          0.2 + velocity * 0.005
-        }),
+            0.2 + velocity * 0.005
+          }),
           inset 0 0 15px rgba(255, 255, 255, ${state.isHovering ? 0.25 : 0.1})
         `;
-
-        glow.style.left = `${pos.x}px`;
-        glow.style.top = `${pos.y}px`;
-        glow.style.opacity = `${0.6 + velocity * 0.015}`;
 
         // Show cursor after first update
         if (cursor.style.opacity === "0") {
           cursor.style.opacity = "1";
         }
+      }
+
+      // Update glow (works for both desktop and touch devices)
+      if (glow) {
+        glow.style.left = `${pos.x}px`;
+        glow.style.top = `${pos.y}px`;
+        glow.style.opacity = `${0.6 + velocity * 0.015}`;
       }
 
       // Check hover state
@@ -254,20 +322,36 @@ export default function CustomCursor() {
 
     // Start animation
     animationFrameId = requestAnimationFrame(animate);
-    window.addEventListener("mousemove", handleMouseMove);
+
+    // Add appropriate event listeners based on device type
+    if (isTouchDevice) {
+      window.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
+      });
+      window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    } else {
+      window.addEventListener("mousemove", handleMouseMove);
+    }
 
     // Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("mousemove", handleMouseMove);
+
+      if (isTouchDevice) {
+        window.removeEventListener("touchstart", handleTouchStart);
+        window.removeEventListener("touchmove", handleTouchMove);
+      } else {
+        window.removeEventListener("mousemove", handleMouseMove);
+      }
+
       // Clean up particles
       trailParticlesRef.current.forEach((p) => p.element?.remove());
       trailParticlesRef.current = [];
     };
   }, [isTouchDevice, mounted]);
 
-  // Don't render during SSR or on touch devices
-  if (!mounted || isTouchDevice) return null;
+  // Don't render during SSR
+  if (!mounted) return null;
 
   return (
     <>
@@ -312,40 +396,42 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* Main cursor ring */}
-      <div
-        ref={cursorRef}
-        className="custom-cursor"
-        style={{
-          position: "fixed",
-          width: "24px",
-          height: "24px",
-          borderRadius: "50%",
-          pointerEvents: "none",
-          zIndex: 9999,
-          transform: "translate(-50%, -50%)",
-          opacity: 0,
-          background: `
-            radial-gradient(circle at center,
-              rgba(255, 255, 255, 0.4) 0%,
-              rgba(59, 130, 246, 0.2) 30%,
-              rgba(139, 92, 246, 0.15) 60%,
-              transparent 100%
-            )
-          `,
-          border: "2px solid rgba(255, 255, 255, 0.7)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          boxShadow: `
-            0 0 20px rgba(59, 130, 246, 0.5),
-            0 0 35px rgba(139, 92, 246, 0.35),
-            0 0 50px rgba(59, 130, 246, 0.2),
-            inset 0 0 15px rgba(255, 255, 255, 0.1)
-          `,
-          willChange: "transform, box-shadow",
-          transition: "opacity 0.3s ease, border-color 0.3s ease",
-        }}
-      />
+      {/* Main cursor ring - only show on desktop/non-touch devices */}
+      {!isTouchDevice && (
+        <div
+          ref={cursorRef}
+          className="custom-cursor"
+          style={{
+            position: "fixed",
+            width: "24px",
+            height: "24px",
+            borderRadius: "50%",
+            pointerEvents: "none",
+            zIndex: 9999,
+            transform: "translate(-50%, -50%)",
+            opacity: 0,
+            background: `
+              radial-gradient(circle at center,
+                rgba(255, 255, 255, 0.4) 0%,
+                rgba(59, 130, 246, 0.2) 30%,
+                rgba(139, 92, 246, 0.15) 60%,
+                transparent 100%
+              )
+            `,
+            border: "2px solid rgba(255, 255, 255, 0.7)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            boxShadow: `
+              0 0 20px rgba(59, 130, 246, 0.5),
+              0 0 35px rgba(139, 92, 246, 0.35),
+              0 0 50px rgba(59, 130, 246, 0.2),
+              inset 0 0 15px rgba(255, 255, 255, 0.1)
+            `,
+            willChange: "transform, box-shadow",
+            transition: "opacity 0.3s ease, border-color 0.3s ease",
+          }}
+        />
+      )}
     </>
   );
 }
