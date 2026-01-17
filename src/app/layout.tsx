@@ -1,6 +1,21 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { Orbitron, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+
+// Futuristic display font for headings
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+  display: 'swap',
+});
+
+// Modern tech font for body text
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'CYRA - Coming Soon',
@@ -13,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="dark" suppressHydrationWarning>
-      <body className="antialiased">
+    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${orbitron.variable} ${spaceGrotesk.variable}`}>
+      <body className="antialiased font-body">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
