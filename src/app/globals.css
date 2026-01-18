@@ -10,6 +10,8 @@
   --glow-opacity: 0.3;
   --text-gradient-start: rgba(255,255,255,0.15);
   --text-gradient-end: rgba(255,255,255,0.05);
+  --font-orbitron: 'Orbitron', sans-serif;
+  --font-space-grotesk: 'Space Grotesk', sans-serif;
 }
 
 [data-theme='light'] {
@@ -26,8 +28,23 @@
 html, body {
   background-color: var(--background) !important;
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: none; /* Hide default cursor for custom cursor effect */
+  overflow-x: hidden;
+}
+
+/* Hide default cursor on all elements */
+* {
+  cursor: none !important;
+}
+
+/* Font utilities */
+.font-display {
+  font-family: var(--font-orbitron), system-ui, sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
 }
 
 /* Blue glow effect */
@@ -49,3 +66,39 @@ html, body {
 .text-muted { color: var(--muted) !important; }
 .border-theme { border-color: var(--border) !important; }
 .card-bg { background-color: var(--card-bg) !important; }
+
+/* Custom cursor pulse animation for idle state */
+@keyframes cursor-pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+.cursor-pulse {
+  animation: cursor-pulse 2s ease-in-out infinite;
+}
+
+/* Custom cursor styles */
+.custom-cursor {
+  will-change: transform, left, top;
+  transition: opacity 0.3s ease;
+}
+
+/* Minimal hover effect for interactive elements */
+a, button, [role="button"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+a:hover, button:hover, [role="button"]:hover {
+  transform: translateY(-1px);
+}
+
+/* Smooth transitions for text elements */
+h1, h2, h3, p {
+  transition: color 0.3s ease;
+}
