@@ -225,10 +225,11 @@ export default function Home() {
 
       <div className="flex flex-col items-center justify-center min-h-screen px-8">
         {/* Coming Soon Text with continuous glitch effect */}
-        <div className="overflow-visible relative">
+        <div className="overflow-visible relative max-w-[90vw]">
           {/* Glitch layers - red */}
           <motion.h1
-            className="absolute font-display text-[60px] md:text-[100px] lg:text-[140px] font-bold tracking-wide leading-none flex uppercase text-red-500/30 blur-[1px]"
+            className="absolute font-display font-bold tracking-wide leading-none flex whitespace-nowrap uppercase text-red-500/30 blur-[1px]"
+            style={{ fontSize: 'clamp(32px, 8vw, 140px)' }}
             animate={{
               x: [-3, 3, -1, 2, -3],
               y: [0, -1, 1, 0, 0],
@@ -242,7 +243,8 @@ export default function Home() {
 
           {/* Glitch layers - cyan */}
           <motion.h1
-            className="absolute font-display text-[60px] md:text-[100px] lg:text-[140px] font-bold tracking-wide leading-none flex uppercase text-cyan-500/30 blur-[1px]"
+            className="absolute font-display font-bold tracking-wide leading-none flex whitespace-nowrap uppercase text-cyan-500/30 blur-[1px]"
+            style={{ fontSize: 'clamp(32px, 8vw, 140px)' }}
             animate={{
               x: [3, -3, 1, -2, 3],
               y: [0, 1, -1, 0, 0],
@@ -256,7 +258,8 @@ export default function Home() {
 
           {/* Main text with continuous wave animation */}
           <motion.h1
-            className="font-display text-[60px] md:text-[100px] lg:text-[140px] font-bold tracking-wide leading-none mb-8 flex uppercase relative"
+            className="font-display font-bold tracking-wide leading-none mb-8 flex whitespace-nowrap uppercase relative"
+            style={{ fontSize: 'clamp(32px, 8vw, 140px)' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
