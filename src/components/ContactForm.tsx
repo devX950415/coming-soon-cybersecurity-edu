@@ -29,14 +29,14 @@ export default function ContactForm() {
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="space-y-6 relative"
+      className="space-y-4 sm:space-y-6 relative"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       {/* Terminal-style header */}
       <motion.div
-        className="flex items-center gap-2 mb-6 text-green-400 text-xs font-mono"
+        className="flex items-center gap-2 mb-4 sm:mb-6 text-green-400 text-[10px] sm:text-xs font-mono"
         animate={{ opacity: [0.7, 1, 0.7] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
@@ -49,11 +49,11 @@ export default function ContactForm() {
         />
       </motion.div>
 
-      <p className="text-gray-400 text-sm mb-8 font-mono">
+      <p className="text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8 font-mono">
         <span className="text-green-400">&gt;</span> Let&apos;s talk about your next way of education through AI-powered cybersecurity training
       </p>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <motion.div
           initial="initial"
           animate={focusedField === 'firstName' ? 'focus' : 'initial'}
@@ -198,7 +198,7 @@ export default function ContactForm() {
       {/* Cybersecurity-themed submit button */}
       <motion.button
         type="submit"
-        className="relative mt-6 px-6 py-3 bg-blue-500/10 backdrop-blur-sm border-blue-500/30 text-white text-sm overflow-hidden font-mono cursor-pointer border border-theme rounded-full"
+        className="relative w-full sm:w-auto mt-4 sm:mt-6 px-6 py-2.5 sm:py-3 bg-blue-500/10 backdrop-blur-sm border-blue-500/30 text-white text-sm overflow-hidden font-mono cursor-pointer border border-theme rounded-full"
         whileHover="hover"
         initial="initial"
         animate={{
@@ -240,7 +240,7 @@ export default function ContactForm() {
 
       {/* Status indicator */}
       <motion.div
-        className="flex items-center gap-2 mt-4 text-gray-500 text-xs font-mono"
+        className="flex flex-wrap items-center gap-2 mt-3 sm:mt-4 text-gray-500 text-[10px] sm:text-xs font-mono"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}

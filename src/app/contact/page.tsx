@@ -183,13 +183,13 @@ export default function Contact() {
 
       <Header />
 
-      <div className="flex items-center min-h-screen px-8 pt-24">
-        <div className="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+      <div className="flex items-center min-h-screen px-4 sm:px-6 md:px-8 pt-20 sm:pt-24 pb-8">
+        <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start">
           {/* Left side - Title with continuous animation */}
-          <div className="overflow-visible relative">
+          <div className="overflow-visible relative text-center lg:text-left">
             {/* Glitch layers */}
             <motion.h1
-              className="absolute text-6xl md:text-7xl font-display font-light leading-tight tracking-wider text-red-500/20 blur-[1px]"
+              className="absolute text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-light leading-tight tracking-wider text-red-500/20 blur-[1px]"
               animate={{
                 x: [-2, 2, -1, 2, -2],
                 opacity: [0, 0.4, 0, 0.3, 0],
@@ -200,7 +200,7 @@ export default function Contact() {
               <span className="block font-normal">CONNECT</span>
             </motion.h1>
             <motion.h1
-              className="absolute text-6xl md:text-7xl font-display font-light leading-tight tracking-wider text-cyan-500/20 blur-[1px]"
+              className="absolute text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-light leading-tight tracking-wider text-cyan-500/20 blur-[1px]"
               animate={{
                 x: [2, -2, 1, -2, 2],
                 opacity: [0, 0.3, 0, 0.4, 0],
@@ -213,7 +213,7 @@ export default function Contact() {
 
             {/* Main title */}
             <motion.h1
-              className="text-6xl md:text-7xl font-display font-light leading-tight tracking-wider"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-light leading-tight tracking-wider"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
@@ -274,7 +274,7 @@ export default function Contact() {
 
             {/* Security status */}
             <motion.div
-              className="flex items-center gap-2 mt-6 text-green-400 text-xs font-mono"
+              className="flex items-center justify-center lg:justify-start gap-2 mt-4 sm:mt-6 text-green-400 text-xs font-mono"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -292,7 +292,7 @@ export default function Contact() {
 
           {/* Right side - Form */}
           <motion.div
-            className="max-w-md"
+            className="w-full max-w-md mx-auto lg:mx-0"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' as const, delay: 0.6 }}

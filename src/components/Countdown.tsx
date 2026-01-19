@@ -45,7 +45,7 @@ export default function Countdown({ targetDate }: CountdownProps) {
 
   return (
     <motion.div
-      className="relative flex items-center bg-[#0a0a0f]/80 backdrop-blur-sm rounded px-6 py-5 gap-4 border border-blue-500/30 font-mono"
+      className="relative flex items-center bg-[#0a0a0f]/80 backdrop-blur-sm rounded px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-5 gap-1 sm:gap-2 md:gap-4 border border-blue-500/30 font-mono"
       animate={{
         borderColor: ['rgba(59, 130, 246, 0.3)', 'rgba(139, 92, 246, 0.4)', 'rgba(59, 130, 246, 0.3)'],
         boxShadow: [
@@ -79,7 +79,7 @@ function FlipCard({ digit, color }: { digit: string; color: 'blue' | 'purple' })
     : 'rgba(139, 92, 246, 0.8)';
 
   return (
-    <div className="relative w-9 h-12 overflow-hidden">
+    <div className="relative w-6 h-8 sm:w-7 sm:h-10 md:w-9 md:h-12 overflow-hidden">
       <AnimatePresence mode="popLayout">
         <motion.div
           key={digit}
@@ -90,7 +90,7 @@ function FlipCard({ digit, color }: { digit: string; color: 'blue' | 'purple' })
           className="absolute inset-0 flex items-center justify-center"
         >
           <motion.span
-            className={`text-3xl font-bold ${color === 'blue' ? 'text-blue-400' : 'text-purple-400'}`}
+            className={`text-xl sm:text-2xl md:text-3xl font-bold ${color === 'blue' ? 'text-blue-400' : 'text-purple-400'}`}
             animate={{
               textShadow: [
                 `0 0 10px ${glowColor}`,
@@ -112,14 +112,14 @@ function TimeUnit({ value, label, color }: { value: string; label: string; color
   const digits = value.split('');
 
   return (
-    <div className="text-center px-2">
+    <div className="text-center px-1 sm:px-1.5 md:px-2">
       <div className="flex gap-0.5">
         {digits.map((digit, index) => (
           <FlipCard key={`${label}-${index}`} digit={digit} color={color} />
         ))}
       </div>
       <motion.div
-        className={`text-[10px] mt-2 uppercase tracking-widest ${color === 'blue' ? 'text-blue-400/60' : 'text-purple-400/60'}`}
+        className={`text-[8px] sm:text-[9px] md:text-[10px] mt-1 sm:mt-1.5 md:mt-2 uppercase tracking-widest ${color === 'blue' ? 'text-blue-400/60' : 'text-purple-400/60'}`}
         animate={{ opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 2, repeat: Infinity }}
       >

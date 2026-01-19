@@ -223,7 +223,7 @@ export default function Home() {
 
       <Header />
 
-      <div className="flex flex-col items-center justify-center min-h-screen px-8">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 md:px-8">
         {/* Coming Soon Text with continuous glitch effect */}
         <div className="overflow-visible relative max-w-[90vw]">
           {/* Glitch layers - red */}
@@ -323,7 +323,7 @@ export default function Home() {
 
         {/* Security status indicator */}
         <motion.div
-          className="flex items-center gap-2 mb-6 text-green-400 text-xs font-mono"
+          className="flex flex-wrap justify-center items-center gap-2 mb-4 sm:mb-6 text-green-400 text-[10px] sm:text-xs font-mono"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
@@ -349,12 +349,12 @@ export default function Home() {
 
         {/* Description */}
         <motion.div
-          className="mt-12 max-w-lg text-center"
+          className="mt-8 sm:mt-12 max-w-lg text-center px-2"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeIn' as const, delay: 0.9 }}
         >
-          <p className="text-gray-400 text-sm leading-relaxed font-mono">
+          <p className="text-gray-400 text-xs sm:text-sm leading-relaxed font-mono">
             <span className="text-green-400">&gt;</span> The future of cybersecurity careers is AI-native.
             <br />
             <span className="text-green-400">&gt;</span> Cyra merges structured skill paths with dynamic, real-world
@@ -362,9 +362,9 @@ export default function Home() {
             <span className="text-green-400">&gt;</span> labs to train the next generation of elite defenders.
           </p>
 
-          <Link href="/contact" className="cursor-pointer inline-block mt-8">
+          <Link href="/contact" className="cursor-pointer inline-block mt-6 sm:mt-8">
             <motion.div
-              className="relative flex items-center gap-3 px-6 py-3 bg-blue-500/10 backdrop-blur-sm  border-blue-500/30 text-white text-sm overflow-hidden font-mono border border-theme rounded-full"
+              className="relative flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-500/10 backdrop-blur-sm border-blue-500/30 text-white text-xs sm:text-sm overflow-hidden font-mono border border-theme rounded-full"
               whileHover="hover"
               initial="initial"
               animate={{
