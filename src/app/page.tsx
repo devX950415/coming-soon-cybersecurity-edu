@@ -131,7 +131,7 @@ function BinaryStream({ direction }: { direction: 'up' | 'down' }) {
 }
 
 export default function Home() {
-  const launchDate = useMemo(() => new Date('2026-04-01T00:00:00'), []);
+  const launchDate = useMemo(() => new Date('2026-10-01T00:00:00'), []);
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
